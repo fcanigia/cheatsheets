@@ -23,6 +23,18 @@ The string is an immutable type in C#, which means it can’t be changed once it
 
 ### Override vs overload
 
+Overloading is the ability to have multiple methods within the same class with the same name, but with different parameters.
+
+public class Calculator
+{
+    public int Add(int a, int b) => a + b;
+    public int Add(int a, int b, int c) => a + b +c;
+    public double Add(double a, double b) => a + b;
+    public double Add(double a, double b, double c) => a + b + c;
+} 
+
+Overriding, on the other hand, is the ability to redefine the implementation of a method in a class that inherits from a parent class.
+
 ### Generics
 
 ### Delegates
