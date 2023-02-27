@@ -35,9 +35,19 @@ public class Calculator
 
 Overriding, on the other hand, is the ability to redefine the implementation of a method in a class that inherits from a parent class.
 
-### Generics
+### [Generics](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/generics)
 
-### Delegates
+Generic means the general form, not specific. In C#, generic means not specific to a particular data type.
+
+C# allows you to define generic classes, interfaces, abstract classes, fields, methods, static methods, properties, events, delegates, and operators using the type parameter and without the specific data type. A type parameter is a placeholder for a particular type specified when creating an instance of the generic type.
+
+A generic type is declared by specifying a type parameter in an angle brackets after a type name, e.g. TypeName<T> where T is a type parameter.
+
+### [Delegates](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates)
+
+C# delegates are similar to pointers to functions, in C or C++. A delegate is a reference type variable that holds the reference to a method. The reference can be changed at runtime.
+
+Delegates are especially used for implementing events and the call-back methods. All delegates are implicitly derived from the System.Delegate class.
 
 ### Events
 
