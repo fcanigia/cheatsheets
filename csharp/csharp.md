@@ -1,5 +1,11 @@
 # C# / Dotnet
 
+## Where to practice coding?
+- www.leetcode.com
+- www.exercism.com
+- www.codewars.com
+- www.hackerrank.com
+
 ## Common
 
 ### String vs string builder
@@ -49,7 +55,12 @@ C# delegates are similar to pointers to functions, in C or C++. A delegate is a 
 
 Delegates are especially used for implementing events and the call-back methods. All delegates are implicitly derived from the System.Delegate class.
 
-### Events
+### [Events](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/events/)
+An event is a notification sent by an object to signal the occurrence of an action. Events in .NET follow the observer design pattern.
+
+The class who raises events is called Publisher, and the class who receives the notification is called Subscriber. There can be multiple subscribers of a single event. Typically, a publisher raises an event when some action occurred. The subscribers, who are interested in getting a notification when an action occurred, should register with an event and handle it.
+
+In C#, an event is an encapsulated delegate. It is dependent on the delegate. The delegate defines the signature for the event handler method of the subscriber class.
 
 ### Anon data type vs regular data type
 
