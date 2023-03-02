@@ -1,4 +1,4 @@
-# C# / Dotnet
+![logo](images/c-sharp-logo.png)
 
 ## Where to practice coding?
 - www.leetcode.com
@@ -62,9 +62,15 @@ The class who raises events is called Publisher, and the class who receives the 
 
 In C#, an event is an encapsulated delegate. It is dependent on the delegate. The delegate defines the signature for the event handler method of the subscriber class.
 
-### Anon data type vs regular data type
+### [Anon data type vs regular data type](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/anonymous-types)
+An anonymous type is a type (class) without any name that can contain public read-only properties only. It cannot contain other members, such as fields, methods, events, etc.
+    
+> var student = new { Id = 1, FirstName = "James", LastName = "Bond" };    
 
 ### Diff between a.equals(b) and a == b
+The equality operator == checks whether two operands are equal or not, and the Object.Equals() method checks whether the two object instances are equal or not.
+
+Internally, == is implemented as the operator overloading method, so the result depends on how that method is overloaded. In the same way, Object.Equals() method is a virtual method and the result depends on the implementation. For example, the == operator and .Equals() compare the values of the two built-in value types variables. if both values are equal then returns true; otherwise returns false.    
 
 ### Why .net Core?
 
