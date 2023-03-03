@@ -77,7 +77,7 @@ There are  some limitations with the .NET Framework. For example, it only runs o
     
 Today, it's common to have an application that runs across devices; a backend on the web server, admin front-end on windows desktop, web, and mobile apps for consumers. So, there is a need for a single framework that works everywhere. So, considering this, Microsoft created .NET Core. The main objective of .NET Core is to make .NET Framework open-source, cross-platform compatible that can be used in a wide variety of verticals, from the data center to touch-based devices.
     
-### Characteristics
+#### Characteristics
 - Open-source framework
 - Cross platfrom
 - Consistent across architectures
