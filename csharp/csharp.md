@@ -73,6 +73,20 @@ The equality operator == checks whether two operands are equal or not, and the O
 Internally, == is implemented as the operator overloading method, so the result depends on how that method is overloaded. In the same way, Object.Equals() method is a virtual method and the result depends on the implementation. For example, the == operator and .Equals() compare the values of the two built-in value types variables. if both values are equal then returns true; otherwise returns false.    
 
 ### Why .net Core?
+There are  some limitations with the .NET Framework. For example, it only runs on the Windows platform. Also, you need to use different .NET APIs for different Windows devices such as Windows Desktop, Windows Store, Windows Phone, and Web applications. In addition to this, the .NET Framework is a machine-wide framework. Any changes made to it affect all applications taking a dependency on it.
+    
+Today, it's common to have an application that runs across devices; a backend on the web server, admin front-end on windows desktop, web, and mobile apps for consumers. So, there is a need for a single framework that works everywhere. So, considering this, Microsoft created .NET Core. The main objective of .NET Core is to make .NET Framework open-source, cross-platform compatible that can be used in a wide variety of verticals, from the data center to touch-based devices.
+    
+### Characteristics
+- Open-source framework
+- Cross platfrom
+- Consistent across architectures
+- Wide range of applications
+- Supports multiple languages
+- Modular architecture
+- CLI tools
+- Flexible deployment
+- Containerizable
 
 ### IQueryable vs IEnumerable
 
