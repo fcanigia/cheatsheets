@@ -112,6 +112,23 @@ So IEnumerable is generally used for dealing with in-memory collection, whereas,
     
 ### Single/First/FirstOrDefault
 
+#### Semantical Difference:
+
+- FirstOrDefault returns a first item of potentially multiple (or default if none exists).
+- SingleOrDefault assumes that there is a single item and returns it (or default if none exists). Multiple items are a violation of contract, an exception is thrown.
+
+#### Performance Difference
+
+- FirstOrDefault is usually faster, it iterates until it finds the element and only has to iterate the whole enumerable when it doesn't find it. In many cases, there is a high probability to find an item.
+- SingleOrDefault needs to check if there is only one element and therefore always iterates the whole enumerable. To be precise, it iterates until it finds a second element and throws an exception. But in most cases, there is no second element.
+
+#### Conclusion
+
+- Use FirstOrDefault if you don't care how many items there are or when you can't afford checking uniqueness (e.g. in a very large collection). When you check uniqueness on adding the items to the collection, it might be too expensive to check it again when searching for those items.
+- Use SingleOrDefault if you don't have to care about performance too much and want to make sure that the assumption of a single item is clear to the reader and checked at runtime.
+
+In practice, you use First / FirstOrDefault often even in cases when you assume a single item, to improve performance. You should still remember that Single / SingleOrDefault can improve readability (because it states the assumption of a single item) and stability (because it checks it) and use it appropriately.   
+    
 ### Struct vs class
 
 ### Heap and stack
