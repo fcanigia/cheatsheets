@@ -90,6 +90,26 @@ Today, it's common to have an application that runs across devices; a backend on
 
 ### IQueryable vs IEnumerable
 
+We use IEnumerable and IQueryable to manipulate the data that is retrieved from database. IQueryable inherits from IEnumerable, so IQueryable does contain all the IEnumerable features. The major difference between IQueryable and IEnumerable is that IQueryable executes query with filters whereas IEnumerable executes the query first and then it filters the data based on conditions.
+
+**Find more detailed differentiation below :**
+
+**IEnumerable**
+
+- IEnumerable exists in the System.Collections namespace
+- IEnumerable execute a select query on the server side, load data in-memory on a client-side and then filter data
+- IEnumerable is suitable for querying data from in-memory collections like List, Array
+- IEnumerable is beneficial for LINQ to Object and LINQ to XML queries
+
+**IQueryable**
+
+- IQueryable exists in the System.Linq namespace
+- IQueryable executes a 'select query' on server-side with all filters
+- IQueryable is suitable for querying data from out-memory (like remote database, service) collections
+- IQueryable is beneficial for LINQ to SQL queries
+
+So IEnumerable is generally used for dealing with in-memory collection, whereas, IQueryable is generally used to manipulate collections.    
+    
 ### Single/First/FirstOrDefault
 
 ### Struct vs class
