@@ -1,6 +1,6 @@
 # cheatsheets
 
-A list of cheatsheets to be ready for interviews.
+A list of cheatsheets of common topics 
 
 Including  
 - POO and patterns
