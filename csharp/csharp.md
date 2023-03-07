@@ -174,14 +174,33 @@ https://www.c-sharpcorner.com/article/C-Sharp-heaping-vs-stacking-in-net-part-i/
 
 ### Hosted services
 
-### Dependency injection
+### [Dependency injection](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection)
 
 #### Lifecycle
 
-- AddTransient
-- AddScoped
-- AddSingleton
+##### AddTransient
+    
+Transient lifetime services are created each time they're requested from the service container. This lifetime works best for lightweight, stateless services. 
+Register transient services with AddTransient. 
+In apps that process requests, transient services are disposed at the end of the request.
+    
+##### AddScoped
+    
+For web applications, a scoped lifetime indicates that services are created once per client request (connection). Register scoped services with AddScoped. In apps that process requests, scoped services are disposed at the end of the request. When using Entity Framework Core, the AddDbContext extension method registers DbContext types with a scoped lifetime by default. By default, in the development environment, resolving a service from another service with a longer lifetime throws an exception. For more information, see Scope validation.
+    
+#####  AddSingleton
+Singleton lifetime services are created either:
 
+- The first time they're requested.
+- By the developer, when providing an implementation instance directly to the container. This approach is rarely needed.    
+    
+Every subsequent request of the service implementation from the dependency injection container uses the same instance. If the app requires singleton behavior, allow the service container to manage the service's lifetime. Don't implement the singleton design pattern and provide code to dispose of the singleton. Services should never be disposed by code that resolved the service from the container. If a type or factory is registered as a singleton, the container disposes the singleton automatically.
+
+Register singleton services with AddSingleton. Singleton services must be thread safe and are often used in stateless services.
+
+In apps that process requests, singleton services are disposed when the ServiceProvider is disposed on application shutdown. Because memory is not released until the app is shut down, consider memory use with a singleton service.
+    
+    
 ### Middleware
 
 ### Map
