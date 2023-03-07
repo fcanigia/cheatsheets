@@ -159,7 +159,9 @@ In this way, struct should be used only when you are sure that,
 In all other cases, you should define your types as classes.    
     
 ### Heap and stack
-
+https://www.c-sharpcorner.com/article/C-Sharp-heaping-vs-stacking-in-net-part-i/#:~:text=The%20Stack%20is%20more%20or,on%20top%20of%20the%20next.
+    
+    
 ### Action vs function
 
 ### Authentication methods
