@@ -6,6 +6,63 @@
 - www.codewars.com
 - www.hackerrank.com
 
+## Table of Content
+
+- [Common](#common)
+  * [String vs string builder](#string-vs-string-builder)
+  * [Access Modifiers](#access-modifiers)
+  * [Override vs overload](#override-vs-overload)
+  * [Generics](#generics)
+  * [Delegates](#delegates)
+  * [Action vs function](#action-vs-function)
+  * [Events](#events)
+  * [Anon data type vs regular data type](#anon-data-type-vs-regular-data-type)
+  * [Why .net Core?](#why-net-core)
+    + [Characteristics](#characteristics)
+  * [IQueryable vs IEnumerable](#iqueryable-vs-ienumerable)
+  * [Single/First/FirstOrDefault](#single-first-firstordefault)
+    + [Semantical Difference](#semantical-difference)
+    + [Performance Difference](#performance-difference)
+    + [Conclusion](#conclusion)
+  * [Struct vs class](#struct-vs-class)
+  * [Heap and stack](#heap-and-stack)
+  * [Authentication methods](#authentication-methods)
+  * [Property binding](#property-binding)
+  * [Value type vs reference type](#value-type-vs-reference-type)
+  * [Deffered vs immmediate execution](#deffered-vs-immmediate-execution)
+  * [Hosted services](#hosted-services)
+  * [Dependency injection](#dependency-injection)
+    + [Lifecycle](#lifecycle)
+      - [AddTransient](#addtransient)
+      - [AddScoped](#addscoped)
+      - [AddSingleton](#addsingleton)
+  * [Middleware](#middleware)
+  * [Middleware: Map, MapWhen, Use, Run](#middleware)
+  * [Async/await](#async-await)
+  * [Threads](#threads)
+  * [Readonly vs constants](#readonly-vs-constants)
+  * [Private function in interface](#private-function-in-interface)
+  * [Abstract class sealed](#abstract-class-sealed)
+  * [Linq let](#linq-let)
+- [EF](#ef)
+  * [How does EF prevents sql injection?](#how-does-ef-prevents-sql-injection)
+  * [Types of inheritance in EF](#types-of-inheritance-in-ef)
+- [Data types](#data-types)
+  * [Linked list](#linked-list)
+  * [Stack](#stack)
+  * [Array](#array)
+- [Patterns](#patterns)
+  * [Unit of work](#unit-of-work)
+  * [CRQS](#crqs)
+  * [Repository pattern](#repository-pattern)
+- [API](#api)
+  * [Verboses](#verboses)
+    + [POST](#post)
+    + [GET](#get)
+    + [PUT](#put)
+    + [PATCH](#patch)
+    + [DELETE](#delete)
+
 ## Common
 
 ### String vs string builder
@@ -161,8 +218,10 @@ In all other cases, you should define your types as classes.
 ### Heap and stack
 https://www.c-sharpcorner.com/article/C-Sharp-heaping-vs-stacking-in-net-part-i/#:~:text=The%20Stack%20is%20more%20or,on%20top%20of%20the%20next.
     
-    
-### Action vs function
+### [Action vs function](https://medium.com/@serhat21zor/c-action-vs-func-62fe917da43f#:~:text=Actions%20can%20only%20take%20input,value%20in%20the%20other%20words.&text=The%20following%20example%20and%20screenshot%20show%20an%20action%20definition.)
+Actions can only take input parameters, while Funcs can take input and output parameters. It is the biggest difference between them.  
+
+An action can not return a value, while a func should return a value in the other words.  
 
 ### Authentication methods
 
@@ -201,9 +260,24 @@ Register singleton services with AddSingleton. Singleton services must be thread
 In apps that process requests, singleton services are disposed when the ServiceProvider is disposed on application shutdown. Because memory is not released until the app is shut down, consider memory use with a singleton service.
     
     
-### Middleware
+### [Middleware](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-7.0)
+Middleware is software that's assembled into an app pipeline to handle requests and responses. Each component:
 
-### Map
+- Chooses whether to pass the request to the next component in the pipeline.  
+- Can perform work before and after the next component in the pipeline.  
+    
+Request delegates are used to build the request pipeline. The request delegates handle each HTTP request.
+
+Request delegates are configured using Run, Map, and Use extension methods. An individual request delegate can be specified in-line as an anonymous method (called in-line middleware), or it can be defined in a reusable class. These reusable classes and in-line anonymous methods are middleware, also called middleware components. Each middleware component in the request pipeline is responsible for invoking the next component in the pipeline or short-circuiting the pipeline. When a middleware short-circuits, it's called a terminal middleware because it prevents further middleware from processing the request.    
+
+![middleware](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/index/_static/request-delegate-pipeline.png)
+
+### [Middleware: Map, MapWhen, Use, Run](https://www.codeproject.com/Tips/1069790/Understand-Run-Use-Map-and-MapWhen-to-Hook-Middl-2)
+*Map*: Map extensions are used as convention for branching the pipeline. We can hook delegate to Map extension to push it to HTTP pipeline. Map simply accepts a path and a function that configures a separate middleware pipeline. In this example, we will hook one middleware/delegate to HTTP pipeline using Map extension.  
+
+*Use*: In case of Use extension, there is a chance to pass next invoker, so that HTTP request will be transferred to the next middleware after execution of current Use if there next invoker is present.
+    
+*Run*: The nature of Run extension is to short circuit the HTTP pipeline immediately. It is a shorthand way of adding middleware to the pipeline that does not call any other middleware which is next to it and immediately return HTTP response. So, it’s recommended to use Run extension to hook middleware at last in HTTP pipeline.
 
 ### Async/await
 
