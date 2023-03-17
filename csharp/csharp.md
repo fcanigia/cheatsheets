@@ -223,16 +223,63 @@ Actions can only take input parameters, while Funcs can take input and output pa
 
 An action can not return a value, while a func should return a value in the other words.  
 
-### Authentication methods
+### Authentication methods (ASP.Net)
+ 
+ASP.NET default authentication Providers
+
+1. Form Authentication: With cookies or passing user details in the query string.
+2. Passport Authentication: Using MS Passport service
+3. Windows Authentication
+4. Custom authentication Provider  
+ 4.1 Multipass/SSO  
+ 4.2 JWT  
+ 4.3 SAML  
+ 
+[Link1](https://medium.com/fabrit-global/authentication-methods-in-c-3ef83c9df043) - [Link2](https://www.loginradius.com/blog/engineering/alternate-authentication-asp/)
 
 ### Property binding
 
+.Net MVVM binding.
+ 
+[Link 1](https://learn.microsoft.com/en-us/archive/msdn-magazine/2016/july/data-binding-a-better-way-to-implement-data-binding-in-net) 
+ 
 ### Value type vs reference type
 
-### Deffered vs immmediate execution
+A Value Type stores its contents in memory allocated on the stack. When you created a Value Type, a single space in memory is allocated to store the value and that variable directly holds a value. If you assign it to another variable, the value is copied directly and both variables work independently. Predefined datatypes, structures, enums are also value types, and work in the same way. Value types can be created at compile time and Stored in stack memory, because of this, Garbage collector can't access the stack.
+ 
+Reference Types are used by a reference which holds a reference (address) to the object but not the object itself. Because reference types represent the address of the variable rather than the data itself, assigning a reference variable to another doesn't copy the data. Instead it creates a second copy of the reference, which refers to the same location of the heap as the original value. Reference Type variables are stored in a different area of memory called the heap. This means that when a reference type variable is no longer used, it can be marked for garbage collection. Examples of reference types are Classes, Objects, Arrays, Indexers, Interfaces etc.
+
+[Link 1](http://net-informations.com/faq/general/valuetype-referencetype.htm) 
+ 
+### Deffered vs immmediate execution - Linq
+ 
+```C#
+  var query = (from e in empTable where e.Age > 45 select new { e.Name });
+ 
+  foreach (var item in query)
+  {
+   DoSomething()
+  }
+```
+
+The query is actually executed when the query variable is iterated over, not when the query variable is created. This is called *deferred execution*.
+ 
+ ```C#
+  var query = (from e in empTable where e.Age > 45 select new { e.Name }).Count();
+```
+ 
+The basic difference between a Deferred execution vs Immediate execution is that Deferred execution of queries produce a sequence of values, whereas Immediate execution of queries return a singleton value and is executed immediately. Examples are using Count(), Average(), Max() etc.
+ 
+ To force immediate execution of a query that does not produce a singleton value, you can call the ToList(), ToDictionary() or the ToArray() method on a query or query variable. These are called conversion operators which allow you to make a copy/snapshot of the result and access is as many times you want, without the need to re-execute the query.
+
+[Link 1](https://www.linkedin.com/pulse/immediate-vs-deferred-execution-linq-pawan-verma/)
 
 ### Hosted services
 
+In ASP.NET Core, background tasks can be implemented as hosted services. A hosted service is a class with background task logic that implements the IHostedService interface. 
+ 
+[Link 1](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-7.0&tabs=visual-studio)
+ 
 ### [Dependency injection](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection)
 
 #### Lifecycle
