@@ -330,6 +330,27 @@ Request delegates are configured using Run, Map, and Use extension methods. An i
 
 ### Threads
 
+A thread is defined as the execution path of a program. Each thread defines a unique flow of control. If your application involves complicated and time consuming operations, then it is often helpful to set different execution paths or threads, with each thread performing a particular job.
+
+Threads are lightweight processes. One common example of use of thread is implementation of concurrent programming by modern operating systems. Use of threads saves wastage of CPU cycle and increase efficiency of an application.
+
+So far we wrote the programs where a single thread runs as a single process which is the running instance of the application. However, this way the application can perform one job at a time. To make it execute more than one task at a time, it could be divided into smaller threads.
+
+#### Thread Life Cycle
+The life cycle of a thread starts when an object of the System.Threading.Thread class is created and ends when the thread is terminated or completes execution.
+
+Following are the various states in the life cycle of a thread:
+
+- The Unstarted State − It is the situation when the instance of the thread is created but the Start method is not called.  
+- The Ready State − It is the situation when the thread is ready to run and waiting CPU cycle.  
+- The Not Runnable State − A thread is not executable, when
+   - Sleep method has been called  
+   - Wait method has been called  
+   - Blocked by I/O operations  
+- The Dead State − It is the situation when the thread completes execution or is aborted. 
+ 
+[Link 1](https://www.tutorialspoint.com/csharp/csharp_multithreading.htm) - [Link 2](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread?view=net-7.0) - [Link 3](https://www.c-sharpcorner.com/article/Threads-in-CSharp/)  
+
 ### Readonly vs constants
 
 ### Private function in interface
