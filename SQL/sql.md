@@ -1,5 +1,10 @@
 ![logo](mssqlserver-logo.png)
 
+## WIP
+
+- update with a better logo
+- create and upload join types images
+
 ## Join types
 
 - **INNER JOIN**: produces a data set that includes rows from the left table, matching rows from the right table.
