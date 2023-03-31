@@ -1,0 +1,3 @@
+https://learn.microsoft.com/es-es/shows/special-edition-performance-troubleshooting-azure-sql-for-beginners/?wt.mc_id=msftsource_issue45E5_email_gdc%3Focid%3Deml_pg394058_gdc_comm_mw&mkt_tok=MTU3LUdRRS0zODIAAAGK0FKsFuXaCV6W89XCV17whPpdJl4gw9bB0Wc3tKbCyUiJT2Bmx1ax-Lk21YvnC-hht_VYpaXJLWYMxWYA365mTijSqCLfeVyVpbIZGLOoBnVLC6Qva-DpZYQ
+
+
