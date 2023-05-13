@@ -45,7 +45,78 @@ When you create a Unique constraint, a unique non-clustered index is created on 
 [Link 1](https://www.tutorialsteacher.com/sqlserver/indexes#:~:text=An%20Index%20in%20SQL%20Server,the%20required%20row(s).) - [Link 2](https://www.tutorialsteacher.com/sqlserver/nonclustered-index)
 
 ## Cursor
+A database cursor is an object that enables traversal over the rows of a result set. It allows you to process individual row returned by a query.
 
+### Steps for using a cursor
+1- Declare
+2- Open 
+3- Fetch
+4- Process
+5- Close
+6- Deallocate
+
+```SQL
+DECLARE cursor_name CURSOR
+    FOR select_statement;
+    
+OPEN cursor_name;
+
+FETCH NEXT FROM cursor INTO variable_list;
+
+WHILE @@FETCH_STATUS = 0  
+    BEGIN
+        FETCH NEXT FROM cursor_name;  
+    END;
+    
+CLOSE cursor_name;
+
+DEALLOCATE cursor_name;
+```
+### Example
+
+Sample table **productions.products**
+
+|production.products|
+|-------------------|
+|* product_id|
+|product_name|
+|brand_id|
+|category_id|
+|model_year|
+|list_price|
+
+```SQL
+DECLARE 
+    @product_name VARCHAR(MAX), 
+    @list_price   DECIMAL;
+
+DECLARE cursor_product CURSOR
+FOR SELECT 
+        product_name, 
+        list_price
+    FROM 
+        production.products;
+
+OPEN cursor_product;
+
+FETCH NEXT FROM cursor_product INTO 
+    @product_name, 
+    @list_price;
+
+WHILE @@FETCH_STATUS = 0
+    BEGIN
+        PRINT @product_name + CAST(@list_price AS varchar);
+        FETCH NEXT FROM cursor_product INTO 
+            @product_name, 
+            @list_price;
+    END;
+
+CLOSE cursor_product;
+
+DEALLOCATE cursor_product;
+```
+
+[Link1](https://www.sqlservertutorial.net/sql-server-stored-procedures/sql-server-cursor/)
 ## Delete vs truncate
 
 ## Varchar vs nvarchar
@@ -57,3 +128,41 @@ When you create a Unique constraint, a unique non-clustered index is created on 
 ## Where vs having
 
 ## CTEs
+
+## Find second,nth highest salary
+
+## Difference between rank,dense_rank and row_number
+
+## Update table to restructure rows to columns and values
+
+## Find and delete duplicates from a table
+
+## find unique or identical records within 2 tables
+
+## Number of records in output for various joins
+
+## Find employees salary and compare higher one’s with manager’s salary
+
+## Department wise highest salary
+
+## Difference between union and union all 
+
+## Difference between GROUP BY and ORDER BY
+
+##  Difference between Partition, clustering, bucketing approaches
+
+## What is an index and how does it improve performance
+
+## Performance optimization approaches in SQL
+
+## What is a subquery and how is it different from a join
+
+## Difference between a clustered and non-clustered index
+
+## What are the different types of constraints in SQL, and how are they used?
+
+## Difference between DELETE and TRUNCATE commands in SQL
+
+## Difference between Trigger and Stored Procedure
+
+## Difference between a NULL value and a zero value in SQL
