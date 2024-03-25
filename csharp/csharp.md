@@ -115,6 +115,59 @@ C# delegates are similar to pointers to functions, in C or C++. A delegate is a 
 
 Delegates are especially used for implementing events and the call-back methods. All delegates are implicitly derived from the System.Delegate class.
 
+```C#
+// Define a delegate type with a signature that matches the method it will point to
+delegate void MyDelegate(string message);
+
+class Program
+{
+    static void Main()
+    {
+        // Create an instance of the delegate and point it to a method
+        MyDelegate delegateInstance = new MyDelegate(PrintMessage);
+
+        // Invoke the delegate, which in turn invokes the method it points to
+        delegateInstance("Hello, delegates!");
+
+        // Alternatively, you can use delegate inference for simpler syntax
+        MyDelegate delegateInferred = PrintMessage;
+        delegateInferred("Delegates with inference!");
+
+        // Multicast delegates: combining multiple methods into one delegate
+        MyDelegate multiDelegate = PrintMessage;
+        multiDelegate += PrintAnotherMessage;
+        multiDelegate("Multicast delegates!");
+
+        // Remove a method from a multicast delegate
+        multiDelegate -= PrintMessage;
+        multiDelegate("After removing PrintMessage method");
+
+        // Using anonymous methods with delegates
+        MyDelegate anonymousDelegate = delegate (string msg)
+        {
+            Console.WriteLine($"Anonymous method: {msg}");
+        };
+        anonymousDelegate("Using anonymous methods");
+
+        // Using lambda expressions with delegates
+        MyDelegate lambdaDelegate = msg => Console.WriteLine($"Lambda expression: {msg}");
+        lambdaDelegate("Using lambda expressions");
+
+        Console.ReadLine();
+    }
+
+    static void PrintMessage(string message)
+    {
+        Console.WriteLine($"Message from PrintMessage method: {message}");
+    }
+
+    static void PrintAnotherMessage(string message)
+    {
+        Console.WriteLine($"Message from PrintAnotherMessage method: {message}");
+    }
+}
+```
+
 ### [Events](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/events/)
 An event is a notification sent by an object to signal the occurrence of an action. Events in .NET follow the observer design pattern.
 
