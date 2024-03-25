@@ -44,6 +44,7 @@
   * [Private function in interface](#private-function-in-interface)
   * [Abstract class sealed](#abstract-class-sealed)
   * [Linq let](#linq-let)
+  * [Dynamic](#dynamic)
 - [EF](#ef)
   * [How does EF prevents sql injection?](#how-does-ef-prevents-sql-injection)
   * [Types of inheritance in EF](#types-of-inheritance-in-ef)
@@ -352,6 +353,49 @@ Following are the various states in the life cycle of a thread:
 - The Dead State − It is the situation when the thread completes execution or is aborted. 
  
 [Link 1](https://www.tutorialspoint.com/csharp/csharp_multithreading.htm) - [Link 2](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread?view=net-7.0) - [Link 3](https://www.c-sharpcorner.com/article/Threads-in-CSharp/)  
+
+### Dynamic
+
+Used to declare variables whose types are resolved at runtime rather than compile time. This means that the type of a dynamic variable is determined dynamically based on the operations performed on it during runtime. 
+
+```
+dynamic dynamicVar;
+
+dynamicVar = 10;  // Assigning an integer
+Console.WriteLine(dynamicVar + 5);  // Output: 15 (dynamicVar is treated as an integer)
+
+dynamicVar = "Hello";  // Assigning a string
+Console.WriteLine(dynamicVar.Length);  // Output: 5 (dynamicVar is treated as a string with a Length property)
+
+dynamicVar = new List<int> { 1, 2, 3 };  // Assigning a list
+Console.WriteLine(dynamicVar.Count);  // Output: 3 (dynamicVar is treated as a list with a Count property)
+```
+
+#### Keys
+1. Dynamic Typing: With dynamic, you can work with objects whose types are not known until runtime. This is useful in scenarios where you need to interact with dynamically-typed languages, COM objects, or when dealing with data whose structure is not known at compile time.
+
+2. Late Binding: dynamic allows for late binding, which means that method calls, property accesses, and other operations on dynamic variables are resolved at runtime. This is in contrast to static typing, where such operations are resolved at compile time.
+
+3. Dynamic Operations: You can perform various operations on dynamic variables, such as method calls, property accesses, arithmetic operations, and more, without requiring explicit type casting or conversion.
+
+4. Type Inference: The type of a dynamic variable is inferred based on the operations performed on it. For example, if you assign an integer value to a dynamic variable and then perform arithmetic operations on it, the variable is treated as an integer.
+
+5. Dynamic Language Interoperability: dynamic is often used when working with dynamic languages like JavaScript, Python, or when interacting with dynamic APIs, COM objects, or reflection-based scenarios.
+
+6. No Compile-Time Type Checking: Since dynamic variables are resolved at runtime, there is no compile-time type checking for operations performed on them. This can lead to runtime errors if the operations are not supported by the actual type of the object.
+
+#### Uses
+1. Interacting with dynamic languages: When working with dynamic languages like JavaScript through interoperability frameworks such as COM interop or the Dynamic Language Runtime (DLR), using dynamic allows you to work with objects whose structure is not known at compile time.
+
+2. Parsing JSON or XML: When deserializing JSON or XML data into C# objects, using dynamic can simplify the process, especially when dealing with nested or dynamic structures where the schema may vary.
+
+3. Working with dynamic APIs: Some APIs or libraries may return objects whose types are determined at runtime or are not known until runtime. Using dynamic allows you to work with these objects without explicitly specifying their types.
+
+4. Dynamic method invocation: In scenarios where you need to invoke methods on objects whose types are not known until runtime, dynamic can be used to call methods dynamically without compile-time type checking.
+
+5. Duck typing: When implementing duck typing-like behavior in C#, where you want to invoke methods or access properties on objects based on their capabilities rather than their specific types, dynamic can be helpful.
+
+6. Reducing verbosity: In some cases, using dynamic can lead to cleaner and more concise code, especially when dealing with complex object hierarchies or when the exact type information is not necessary.
 
 ### Readonly vs constants
 
