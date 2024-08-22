@@ -45,6 +45,8 @@
   * [Abstract class sealed](#abstract-class-sealed)
   * [Linq let](#linq-let)
   * [Dynamic](#dynamic)
+  * [throw vs throw ex](#thrnowex)
+  * [Garbage collector](#garbage-collector)
 - [EF](#ef)
   * [How does EF prevents sql injection?](#how-does-ef-prevents-sql-injection)
   * [Types of inheritance in EF](#types-of-inheritance-in-ef)
@@ -449,6 +451,97 @@ Console.WriteLine(dynamicVar.Count);  // Output: 3 (dynamicVar is treated as a l
 5. Duck typing: When implementing duck typing-like behavior in C#, where you want to invoke methods or access properties on objects based on their capabilities rather than their specific types, dynamic can be helpful.
 
 6. Reducing verbosity: In some cases, using dynamic can lead to cleaner and more concise code, especially when dealing with complex object hierarchies or when the exact type information is not necessary.
+
+### Throw vs Throw ex
+
+In C#, the difference between using throw and throw ex inside a catch block is significant in terms of how the exception's stack trace is preserved and presented.
+throw:
+
+- Re-throws the current exception without altering the stack trace.
+- The original stack trace, which shows where the exception was first thrown, is preserved. This is useful for debugging because you can trace the exact sequence of method calls that led to the exception.
+
+```C#
+try
+{
+    // Some code that might throw an exception
+}
+catch (Exception ex)
+{
+    // Handle or log the exception
+    throw; // Re-throws the original exception
+}
+```
+
+throw ex:
+
+- Throws the caught exception again but resets the stack trace.
+- The stack trace will now begin from the point where throw ex is called, which can make it harder to trace back to the original source of the exception.
+
+```C#
+try
+{
+    // Some code that might throw an exception
+}
+catch (Exception ex)
+{
+    // Handle or log the exception
+    throw ex; // Re-throws the exception, resetting the stack trace
+}
+```
+
+Which One to Use?
+
+- Use throw when you want to maintain the original stack trace, which is almost always the preferred approach because it provides more accurate debugging information.
+- Use throw ex only if you have a specific reason to reset the stack trace, which is uncommon and generally discouraged.
+
+Preserving the original stack trace makes it easier to identify where the issue originated, so throw is generally the better practice.
+
+### Garbage collector
+
+Garbage collection (GC) in C# is an automatic memory management system provided by the .NET runtime (CLR - Common Language Runtime). Its main purpose is to manage the allocation and release of memory for your application, ensuring that objects that are no longer in use are properly cleaned up and that memory is efficiently utilized.
+
+#### Key Concepts of Garbage Collection in C#
+
+1. Managed Heap:
+ - When an object is created in C#, it is allocated memory on the managed heap. The managed heap is divided into three generations: Generation 0, Generation 1, and Generation 2.
+
+3. Generations:
+ - Generation 0: This is where newly created objects are allocated. Since most objects are short-lived, many of them are collected in Generation 0.
+ - Generation 1: Objects that survive the first garbage collection (i.e., those that are still referenced) are moved to Generation 1.
+ - Generation 2: Objects that survive multiple garbage collections move to Generation 2. These objects are usually long-lived.
+
+4. GC Process:
+ - Allocation: When you create a new object, memory is allocated for it in Generation 0.
+ - Mark Phase: The garbage collector identifies which objects are still in use by examining the application’s roots (e.g., static fields, local variables, CPU registers). These objects are marked as "live."
+ - Sweep Phase: Objects that are not marked as live (i.e., those that are no longer referenced) are considered unreachable and their memory is reclaimed.
+ - Compact Phase: The heap is compacted to reduce fragmentation, meaning that the memory occupied by dead objects is reclaimed, and live objects are moved together to make the free space contiguous.
+
+5. GC Modes:
+ - Workstation GC: Optimized for client applications with a single CPU.
+ - Server GC: Optimized for server applications, making use of multiple threads for GC operations.
+
+6. Finalization and IDisposable:
+ - If an object implements a finalizer (destructor), the garbage collector will call it before reclaiming the memory. Finalization is non-deterministic, meaning you cannot predict when the finalizer will run.
+ - Implementing the IDisposable interface allows you to manually release unmanaged resources (e.g., file handles, database connections) using the Dispose method. This is usually done in a using statement to ensure resources are cleaned up as soon as they are no longer needed.
+
+7. Generational Hypothesis:
+ - The garbage collector operates on the assumption that most objects die young (i.e., they are short-lived). Therefore, it optimizes by focusing more on collecting Generation 0, which usually results in a quick and efficient cleanup.
+
+8. Concurrent and Background GC:
+ - Concurrent GC: Runs garbage collection concurrently with the application's execution to minimize pause times.
+ - Background GC: A variation of concurrent GC for server applications that minimizes the time the application is paused for garbage collection.
+
+9. Large Object Heap (LOH):
+ - Objects that are 85,000 bytes or larger are allocated on the Large Object Heap. The LOH is not compacted as frequently as the other generations to avoid the performance cost of moving large objects.
+
+#### Summary
+
+**Automatic Memory Management**: The garbage collector automatically handles memory allocation and reclamation, freeing developers from manual memory management.
+**Generational Collection**: The garbage collector works in generations, focusing more on collecting younger objects, which are more likely to be short-lived.
+**Efficient and Optimized**: The GC process is optimized to minimize the impact on application performance, especially with concurrent and background garbage collection modes.
+**Finalization and IDisposable**: Developers can influence the GC process by implementing finalizers and the IDisposable interface for proper resource management.
+
+Understanding how garbage collection works can help you write more efficient C# code and avoid common pitfalls like memory leaks and improper resource management.
 
 ### Readonly vs constants
 
