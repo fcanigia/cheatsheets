@@ -45,7 +45,7 @@
   * [Abstract class sealed](#abstract-class-sealed)
   * [Linq let](#linq-let)
   * [Dynamic](#dynamic)
-  * [throw vs throw ex](#thrnowex)
+  * [throw vs throw ex](#throw-vs-throw-ex)
   * [Garbage collector](#garbage-collector)
 - [EF](#ef)
   * [How does EF prevents sql injection?](#how-does-ef-prevents-sql-injection)
@@ -57,7 +57,7 @@
 - [Patterns](#patterns)
   * [Unit of work](#unit-of-work)
   * [CRQS](#crqs)
-  * [Repository pattern](#repository-pattern)
+  * [Repository pattern](#repository)
 - [API](#api)
   * [Verboses](#verboses)
     + [POST](#post)
@@ -553,9 +553,161 @@ Understanding how garbage collection works can help you write more efficient C# 
 
 ## EF
 
+### EF vs Dapper
+
+Entity Framework Core (EF Core) and Dapper are two popular Object-Relational Mappers (ORMs) in C#, but they differ significantly in their approach, features, and performance.
+1. Entity Framework Core (EF Core)
+
+    Type: Full-fledged ORM
+    Abstraction Level: High
+    Features:
+        EF Core provides a higher-level abstraction, making it easier to work with databases using LINQ queries and strongly-typed classes.
+        It supports complex scenarios like lazy loading, change tracking, and migrations.
+        EF Core allows you to model your database directly using code-first or database-first approaches.
+        It is more feature-rich and better suited for projects where database schema management and advanced querying capabilities are important.
+    Performance:
+        EF Core is generally slower than Dapper because it has more overhead due to its higher level of abstraction.
+        The performance hit is more noticeable in scenarios with complex queries, large datasets, or where fine-grained control over SQL queries is needed.
+
+2. Dapper
+
+    Type: Micro-ORM
+    Abstraction Level: Low
+    Features:
+        Dapper is a lightweight, performance-oriented micro-ORM that maps database queries to objects with minimal overhead.
+        It is essentially an extension to IDbConnection, providing a simple API for running raw SQL queries and mapping the results to C# objects.
+        Dapper does not have the advanced features of EF Core, like change tracking, migrations, or LINQ support.
+        It allows you to write raw SQL queries, giving you complete control over your database interactions.
+    Performance:
+        Dapper is generally faster than EF Core because it has very little overhead and is close to the metal (i.e., close to how ADO.NET works).
+        It’s often chosen for performance-critical applications or where the developer needs more control over the SQL being executed.
+
+Which One is Faster?
+
+    Dapper is typically faster than EF Core, especially in scenarios where the application needs to execute complex queries, retrieve large datasets, or requires minimal latency.
+    However, the difference in performance might be negligible for simple queries or small datasets. If you need the features provided by EF Core, the slight performance trade-off may be worth it.
+
+Choosing Between EF Core and Dapper
+
+    Use EF Core if:
+        You need a full-featured ORM with support for complex queries, relationships, and LINQ.
+        You want to work with a higher level of abstraction and have the benefits of features like migrations and change tracking.
+    Use Dapper if:
+        Performance is a critical factor.
+        You prefer writing raw SQL queries and need fine-grained control over the database interactions.
+        You don't need the extra features provided by a full ORM like EF Core.
+
+Each has its strengths and can be chosen based on the specific needs of the project. Some developers even use both in the same project, using Dapper for performance-critical sections and EF Core for areas where its features are beneficial.
+
 ### How does EF prevents sql injection?
 
+Entity Framework (EF) prevents SQL injection primarily through the use of parameterized queries and the LINQ (Language-Integrated Query) syntax, which abstracts the process of query construction. Here’s how EF achieves this:
+
 ### Types of inheritance in EF
+
+Entity Framework (EF) Core supports several types of inheritance strategies that you can use to model inheritance hierarchies in your database. These strategies allow you to map object-oriented inheritance structures to relational database schemas. The three main types of inheritance in EF Core are:
+
+#### 1. **Table-per-Hierarchy (TPH)**
+- **Description**: In TPH, a single table is used to store data for all classes in an inheritance hierarchy. A discriminator column is added to the table to distinguish between different types in the hierarchy.
+- **Pros**:
+  - Simple to implement and requires only one table.
+  - Efficient querying since all data is in a single table.
+- **Cons**:
+  - Can lead to sparse tables if subclasses have many properties that are not shared with the base class.
+  - The schema might not be as normalized as in other strategies.
+- **Example**:
+
+  ```csharp
+  public class Animal
+  {
+      public int Id { get; set; }
+      public string Name { get; set; }
+  }
+
+  public class Dog : Animal
+  {
+      public bool Barks { get; set; }
+  }
+
+  public class Cat : Animal
+  {
+      public bool Meows { get; set; }
+  }
+  ```
+
+  EF Core will create a single `Animals` table with columns for `Id`, `Name`, `Barks`, `Meows`, and a discriminator column like `Discriminator` that indicates whether the row represents a `Dog`, `Cat`, or another subclass.
+
+#### 2. **Table-per-Type (TPT)**
+- **Description**: In TPT, each class in the inheritance hierarchy has its own table. The base class table contains the properties common to all classes, and each derived class has a table containing properties specific to that class. These tables are linked by a primary key/foreign key relationship.
+- **Pros**:
+  - Schema is more normalized.
+  - Allows you to use database constraints that are specific to subclasses.
+- **Cons**:
+  - Can result in complex queries and joins when retrieving data.
+  - May have performance implications due to the need for multiple joins.
+- **Example**:
+
+  ```csharp
+  public class Animal
+  {
+      public int Id { get; set; }
+      public string Name { get; set; }
+  }
+
+  public class Dog : Animal
+  {
+      public bool Barks { get; set; }
+  }
+
+  public class Cat : Animal
+  {
+      public bool Meows { get; set; }
+  }
+  ```
+
+  In TPT, EF Core will create separate tables:
+  - `Animals` with columns `Id` and `Name`
+  - `Dogs` with columns `Id` and `Barks` (where `Id` is a foreign key referencing `Animals`)
+  - `Cats` with columns `Id` and `Meows` (where `Id` is a foreign key referencing `Animals`)
+
+#### 3. **Table-per-Concrete-Type (TPC)**
+- **Description**: In TPC, each concrete class in the hierarchy has its own table. There is no shared table for the base class. Each table contains all the properties of that class, including inherited properties.
+- **Pros**:
+  - Simple querying since each class maps to a single table.
+  - No need for joins or discriminator columns.
+- **Cons**:
+  - Data duplication across tables, as the properties of the base class are repeated in each derived class table.
+  - Schema is less normalized.
+- **Example**:
+
+  ```csharp
+  public class Animal
+  {
+      public int Id { get; set; }
+      public string Name { get; set; }
+  }
+
+  public class Dog : Animal
+  {
+      public bool Barks { get; set; }
+  }
+
+  public class Cat : Animal
+  {
+      public bool Meows { get; set; }
+  }
+  ```
+
+  In TPC, EF Core will create separate tables:
+  - `Dogs` with columns `Id`, `Name`, and `Barks`
+  - `Cats` with columns `Id`, `Name`, and `Meows`
+
+#### **Choosing the Right Strategy**
+- **TPH** is often the default choice because it is straightforward and performs well for many scenarios.
+- **TPT** is useful when you want a normalized schema or need to apply different constraints to different subclasses, but it can introduce performance overhead.
+- **TPC** is less commonly used due to data duplication but can be useful when you need simple and efficient queries at the cost of storage efficiency.
+
+Each strategy has its trade-offs, and the choice depends on the specific requirements of your application, such as performance needs, database normalization, and the complexity of the inheritance hierarchy.
 
 ## Data types
 
@@ -568,8 +720,31 @@ Understanding how garbage collection works can help you write more efficient C# 
 ## Patterns
 
 ### Unit of work
+
+- **Purpose**: The Unit of Work pattern manages transactions and coordinates changes to multiple repositories to ensure that all operations succeed or fail as a unit. It acts as a wrapper around multiple operations that might involve different repositories or entities, ensuring that they are committed together or rolled back in case of failure.
+- **Usage**: In practice, the Unit of Work pattern is used to group operations that should be treated as a single transaction. For instance, in a banking application, transferring money between accounts might involve updating multiple records, and the Unit of Work ensures that these updates either all succeed or none of them do.
+- **Benefits**:
+  - Ensures atomicity of transactions.
+  - Simplifies the management of changes across multiple repositories.
+  - Helps reduce the likelihood of data inconsistencies.
+
 ### CRQS
-### Repository pattern
+
+- **Purpose**: CQRS is a design pattern that separates the read (query) and write (command) operations into distinct models. This allows for different optimization, scalability, and consistency strategies for reading data and modifying it.
+- **Usage**: In CQRS, the "command" model handles operations that change the state of the application, such as creating or updating records, while the "query" model handles operations that retrieve data. This separation is especially beneficial in complex domains or systems with high read/write loads, where different requirements for reading and writing data exist.
+- **Benefits**:
+  - Enables independent scaling of read and write operations.
+  - Allows for more flexibility in handling different data consistency models.
+  - Simplifies the handling of complex business logic in commands.
+
+### Repository 
+
+- **Purpose**: The Repository pattern provides an abstraction layer between the application and the data access logic, isolating the database or data source interactions. It encapsulates the logic for retrieving and storing data, allowing the application to work with domain objects without concerning itself with the underlying data access code.
+- **Usage**: A repository typically contains methods like `Add`, `Update`, `Remove`, and `Get`, providing a simple interface for working with data entities. This pattern is often used in conjunction with the Unit of Work pattern to manage transactions across multiple repositories.
+- **Benefits**:
+  - Promotes a clean separation of concerns by isolating the data access logic.
+  - Makes the codebase more maintainable and testable.
+  - Allows for easy switching of data sources (e.g., from a database to an in-memory collection).
 
 ## API
 
