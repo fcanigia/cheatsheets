@@ -48,6 +48,7 @@
   * [throw vs throw ex](#throw-vs-throw-ex)
   * [Garbage collector](#garbage-collector)
 - [EF](#ef)
+  * [EF vs Dapper](#EF-vs-Dapper) 
   * [How does EF prevents sql injection?](#how-does-ef-prevents-sql-injection)
   * [Types of inheritance in EF](#types-of-inheritance-in-ef)
 - [Data types](#data-types)
@@ -582,20 +583,21 @@ Entity Framework Core (EF Core) and Dapper are two popular Object-Relational Map
         Dapper is generally faster than EF Core because it has very little overhead and is close to the metal (i.e., close to how ADO.NET works).
         It’s often chosen for performance-critical applications or where the developer needs more control over the SQL being executed.
 
-Which One is Faster?
+#### Which One is Faster?
 
-    Dapper is typically faster than EF Core, especially in scenarios where the application needs to execute complex queries, retrieve large datasets, or requires minimal latency.
-    However, the difference in performance might be negligible for simple queries or small datasets. If you need the features provided by EF Core, the slight performance trade-off may be worth it.
+Dapper is typically faster than EF Core, especially in scenarios where the application needs to execute complex queries, retrieve large datasets, or requires minimal latency.
+However, the difference in performance might be negligible for simple queries or small datasets. If you need the features provided by EF Core, the slight performance trade-off may be worth it.
 
-Choosing Between EF Core and Dapper
+#### Choosing Between EF Core and Dapper
 
-    Use EF Core if:
-        You need a full-featured ORM with support for complex queries, relationships, and LINQ.
-        You want to work with a higher level of abstraction and have the benefits of features like migrations and change tracking.
-    Use Dapper if:
-        Performance is a critical factor.
-        You prefer writing raw SQL queries and need fine-grained control over the database interactions.
-        You don't need the extra features provided by a full ORM like EF Core.
+##### Use EF Core if:
+    You need a full-featured ORM with support for complex queries, relationships, and LINQ.
+    You want to work with a higher level of abstraction and have the benefits of features like migrations and change tracking.
+
+##### Use Dapper if:
+    Performance is a critical factor.
+    You prefer writing raw SQL queries and need fine-grained control over the database interactions.
+    You don't need the extra features provided by a full ORM like EF Core.
 
 Each has its strengths and can be chosen based on the specific needs of the project. Some developers even use both in the same project, using Dapper for performance-critical sections and EF Core for areas where its features are beneficial.
 
