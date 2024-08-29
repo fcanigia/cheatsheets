@@ -685,6 +685,16 @@ Managed and unmanaged code serve different purposes and have their own advantage
 
 ### Linq let
 
+### Generic vs objects
+
+### Attributes and performance issues
+
+### Auth libraries
+
+### Abstract class with constructor?
+
+### Where to start services if there is no startup.cs
+
 ## EF
 
 ### EF vs Dapper
