@@ -136,6 +136,36 @@ DEALLOCATE cursor_product;
 
 [Link 1](https://www.sqlshack.com/difference-between-sql-truncate-and-sql-delete-statements-in-sql-server/) - [Link 2](https://www.tutorialspoint.com/difference-between-delete-and-truncate-in-sql-query#:~:text=The%20DELETE%20command%20in%20SQL,not%20any%20conditions%20are%20met.)
 
+## Key Differences Between Stored Procedures and Functions
+
+### When to Use Stored Procedures vs. Functions
+| **Aspect**                         | **Stored Procedure**                                                                                 | **Function**                                                                                         |
+|------------------------------------|------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| **Purpose**                        | Used to perform one or more tasks such as DML (Data Manipulation Language) operations, logic execution, etc. | Used to compute and return a single value or result set. Primarily used for calculations and operations. |
+| **Return Value**                   | May or may not return a value. Can return multiple values using `OUT` parameters or result sets.       | Must return a single value (scalar, table, or complex data type).                                     |
+| **Invocation**                     | Called using the `EXEC` or `CALL` statement.                                                         | Called as part of an expression (e.g., in a `SELECT` statement) or using a function call.             |
+| **Output Parameters**              | Can have output (`OUT`) parameters to return multiple values.                                          | Cannot have output parameters; returns only one value through the `RETURN` statement.                 |
+| **Use in SQL Statements**          | Cannot be directly used in SQL statements like `SELECT`, `WHERE`, or `JOIN`.                           | Can be used directly in SQL statements such as `SELECT`, `WHERE`, `JOIN`, etc.                        |
+| **Transaction Handling**           | Can contain transaction management code (e.g., `BEGIN TRANSACTION`, `COMMIT`, `ROLLBACK`).            | Cannot contain explicit transaction management code; it's meant for computation and must be deterministic. |
+| **Side Effects**                   | Can perform operations that cause side effects (e.g., inserting, updating, deleting data).            | Should not cause side effects. Generally used for read-only operations or calculations.               |
+| **Exception Handling**             | Supports exception handling using `TRY...CATCH` blocks in SQL Server or similar mechanisms in other RDBMS. | Typically does not support exception handling mechanisms like stored procedures.                      |
+| **Return Data Type**               | Does not have a return data type defined; can return result sets via `SELECT` or output parameters.    | Must have a defined return data type, such as `int`, `varchar`, `table`, etc.                         |
+| **Performance Optimization**       | Often optimized for larger and more complex tasks that might include multiple operations.             | Optimized for computations that are performed frequently and are deterministic.                       |
+| **Compatibility with Triggers**    | Cannot be directly called in a trigger.                                                               | Can be called from a trigger.                                                                         |
+
+
+#### Use Stored Procedures When:
+- You need to perform complex operations, including multiple DML operations (insert, update, delete).
+- You need to perform a series of operations or business logic that may include conditional logic, loops, and exception handling.
+- You need to use transactions or manage error handling within the SQL code.
+- You need to return multiple result sets or affect the database state directly.
+
+ #### Use Functions When:
+- You need to perform a calculation or return a single value that can be used in SQL statements.
+- You want to encapsulate reusable code that does not affect the state of the database.
+- You need to use a value or table as part of a SELECT, WHERE, or JOIN clause.
+- You want to ensure the code is deterministic (i.e., given the same inputs, the same output will always be produced).
+
 ## Varchar vs nvarchar
 
 ## Cross Apply
