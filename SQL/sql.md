@@ -166,50 +166,284 @@ DEALLOCATE cursor_product;
 - You need to use a value or table as part of a SELECT, WHERE, or JOIN clause.
 - You want to ensure the code is deterministic (i.e., given the same inputs, the same output will always be produced).
 
-## Varchar vs nvarchar
+Here's the content with tables in Markdown format, prepared for you to copy and paste directly into a `.md` file:
 
-## Cross Apply
+---
 
-## Scan vs seek
+## **Varchar vs Nvarchar**
+| **Aspect**         | **VARCHAR**                                                       | **NVARCHAR**                                                      |
+|--------------------|-------------------------------------------------------------------|-------------------------------------------------------------------|
+| **Definition**     | Variable-length, non-Unicode character data.                       | Variable-length, Unicode character data.                          |
+| **Storage Size**   | Uses 1 byte per character.                                         | Uses 2 bytes per character.                                       |
+| **Use Case**       | For non-Unicode data (e.g., English text).                         | For Unicode data (e.g., text in multiple languages).              |
+| **Performance**    | Faster and uses less storage for non-Unicode data.                 | Slightly slower and uses more storage due to Unicode support.     |
+| **Capacity**       | Maximum 8,000 characters (SQL Server).                             | Maximum 4,000 characters (SQL Server).                            |
+| **Collation**      | Uses non-Unicode collation settings.                               | Uses Unicode collation settings.                                  |
 
-## Where vs having
+---
 
-## CTEs
+## **Cross Apply**
 
-## Find second,nth highest salary
+`CROSS APPLY` is used to join a table-valued function with an outer table in SQL Server. It returns only those rows from the outer table for which the table-valued function returns a result.
 
-## Difference between rank,dense_rank and row_number
+| **Use Case**                          | **Description**                                                                 |
+|---------------------------------------|---------------------------------------------------------------------------------|
+| **Table-Valued Functions**            | Joins rows from a table to rows returned by a table-valued function.             |
+| **Performance**                       | Often used for better performance when a table-valued function is required.      |
+| **Comparison with `OUTER APPLY`**     | `CROSS APPLY` returns rows only when a match is found, unlike `OUTER APPLY`.     |
 
-## Update table to restructure rows to columns and values
+---
 
-## Find and delete duplicates from a table
+## **Scan vs Seek**
 
-## find unique or identical records within 2 tables
+| **Aspect**          | **Index Scan**                                                             | **Index Seek**                                                            |
+|---------------------|---------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| **Definition**      | Reads all rows in an index or table to find the relevant data.             | Uses index b-tree structure to directly find specific rows.              |
+| **Use Case**        | When a query returns a large portion of the table.                         | When a query returns a small number of rows using indexed columns.       |
+| **Performance**     | Slower, more I/O operations as it scans the entire table or index.         | Faster, fewer I/O operations as it directly accesses the data.           |
+| **Cost**            | Higher cost due to scanning all rows.                                      | Lower cost due to direct access to the needed rows.                      |
 
-## Number of records in output for various joins
+---
 
-## Find employees salary and compare higher one’s with manager’s salary
+## **Where vs Having**
 
-## Department wise highest salary
+| **Aspect**          | **WHERE Clause**                                                           | **HAVING Clause**                                                        |
+|---------------------|---------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| **Purpose**         | Filters rows before grouping them.                                         | Filters groups after the aggregation has been performed.                 |
+| **Usage**           | Used with `SELECT`, `UPDATE`, `DELETE` statements.                         | Used only with `SELECT` statements and must be used with `GROUP BY`.     |
+| **Performance**     | Faster as it filters records before grouping.                              | Slower as it filters after aggregation.                                  |
+| **Syntax**          | `SELECT * FROM table WHERE condition;`                                      | `SELECT * FROM table GROUP BY column HAVING condition;`                   |
 
-## Difference between union and union all 
+---
 
-## Difference between GROUP BY and ORDER BY
+## **Common Table Expressions (CTEs)**
 
-##  Difference between Partition, clustering, bucketing approaches
+Common Table Expressions (CTEs) are a temporary result set that can be referenced within a `SELECT`, `INSERT`, `UPDATE`, or `DELETE` statement.
 
-## What is an index and how does it improve performance
+| **Aspect**          | **Description**                                                             |
+|---------------------|-----------------------------------------------------------------------------|
+| **Definition**      | A temporary named result set derived from a simple query.                    |
+| **Syntax**          | `WITH CTE_Name AS (SELECT * FROM table WHERE condition)`                     |
+| **Use Case**        | Used for complex queries to improve readability and maintainability.         |
+| **Recursion**       | Supports recursive queries (e.g., hierarchical data retrieval).              |
 
-## Performance optimization approaches in SQL
+---
 
-## What is a subquery and how is it different from a join
+## **Find Second, Nth Highest Salary**
 
-## Difference between a clustered and non-clustered index
+To find the second or Nth highest salary in SQL Server:
 
-## What are the different types of constraints in SQL, and how are they used?
+```sql
+SELECT DISTINCT Salary 
+FROM Employees E1 
+WHERE N-1 = (SELECT COUNT(DISTINCT Salary) 
+             FROM Employees E2 
+             WHERE E2.Salary > E1.Salary);
+```
 
-## Difference between DELETE and TRUNCATE commands in SQL
+---
 
-## Difference between Trigger and Stored Procedure
+## **Difference between `RANK()`, `DENSE_RANK()`, and `ROW_NUMBER()`**
 
-## Difference between a NULL value and a zero value in SQL
+| **Function**      | **Description**                                                                 |
+|-------------------|---------------------------------------------------------------------------------|
+| **`RANK()`**      | Assigns a rank to each row within a partition, with gaps for duplicate rankings. |
+| **`DENSE_RANK()`**| Assigns a rank without gaps; duplicate rankings have the same number, no gaps.   |
+| **`ROW_NUMBER()`**| Assigns a unique sequential integer to rows within a partition without gaps.     |
+
+---
+
+## **Update Table to Restructure Rows to Columns and Values**
+
+Using `PIVOT` to convert rows to columns:
+
+```sql
+SELECT *
+FROM (SELECT ColumnName, Value FROM TableName) AS SourceTable
+PIVOT (MAX(Value) FOR ColumnName IN ([Column1], [Column2], [Column3])) AS PivotTable;
+```
+
+---
+
+## **Find and Delete Duplicates from a Table**
+
+To delete duplicate rows:
+
+```sql
+WITH CTE AS (
+  SELECT *, 
+         ROW_NUMBER() OVER (PARTITION BY Column1, Column2 ORDER BY (SELECT NULL)) AS RowNum
+  FROM TableName
+)
+DELETE FROM CTE WHERE RowNum > 1;
+```
+
+---
+
+## **Find Unique or Identical Records Within 2 Tables**
+
+```sql
+SELECT * FROM Table1
+EXCEPT
+SELECT * FROM Table2;
+
+SELECT * FROM Table1
+INTERSECT
+SELECT * FROM Table2;
+```
+
+---
+
+## **Number of Records in Output for Various Joins**
+
+| **Join Type**    | **Description**                                                     | **Number of Records**                                                         |
+|------------------|---------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| **INNER JOIN**   | Returns records with matching values in both tables.                | Matches only.                                                                 |
+| **LEFT JOIN**    | Returns all records from the left table, and matched records from the right table. | All from the left table, matched from right.                                   |
+| **RIGHT JOIN**   | Returns all records from the right table, and matched records from the left table. | All from the right table, matched from left.                                   |
+| **FULL JOIN**    | Returns all records when there is a match in either left or right table. | All records from both tables.                                                 |
+| **CROSS JOIN**   | Returns the Cartesian product of both tables.                       | Number of rows in the first table * number of rows in the second table.        |
+
+---
+
+## **Find Employees' Salary and Compare Higher Ones with Manager's Salary**
+
+```sql
+SELECT E.EmployeeID, E.Salary, M.ManagerID, M.Salary AS ManagerSalary
+FROM Employees E
+JOIN Employees M ON E.ManagerID = M.EmployeeID
+WHERE E.Salary > M.Salary;
+```
+
+---
+
+## **Department-Wise Highest Salary**
+
+```sql
+SELECT Department, MAX(Salary) AS HighestSalary
+FROM Employees
+GROUP BY Department;
+```
+
+---
+
+## **Difference between `UNION` and `UNION ALL`**
+
+| **Aspect**     | **UNION**                                        | **UNION ALL**                                   |
+|----------------|--------------------------------------------------|-------------------------------------------------|
+| **Duplicates** | Removes duplicates from the result set.          | Includes all duplicates in the result set.       |
+| **Performance**| Slower due to duplicate removal.                 | Faster as it doesn't remove duplicates.          |
+| **Use Case**   | When unique records are needed.                  | When duplicates are acceptable or expected.      |
+
+---
+
+## **Difference between `GROUP BY` and `ORDER BY`**
+
+| **Aspect**     | **GROUP BY**                                         | **ORDER BY**                                        |
+|----------------|------------------------------------------------------|-----------------------------------------------------|
+| **Purpose**    | Groups rows that have the same values in specified columns. | Sorts the result set by one or more columns.         |
+| **Use Case**   | Used with aggregate functions like `SUM`, `COUNT`.   | Used to sort results in ascending or descending order. |
+| **Syntax**     | `SELECT column, SUM(value) FROM table GROUP BY column` | `SELECT * FROM table ORDER BY column ASC/DESC`       |
+
+---
+
+## **Difference between Partition, Clustering, Bucketing Approaches**
+
+| **Aspect**        | **Partitioning**                                                      | **Clustering**                                                | **Bucketing**                                          |
+|-------------------|----------------------------------------------------------------------|--------------------------------------------------------------|-------------------------------------------------------|
+| **Definition**    | Dividing a table into smaller, more manageable pieces.                | Sorting data in a particular order for efficient retrieval.   | Dividing data into fixed-size buckets for better query performance. |
+| **Use Case**      | Improves query performance by reducing the amount of data scanned.    | Optimizes range queries and enhances query performance.       | Speeds up joins and aggregations on specific columns.  |
+| **Example**       | Monthly partitions for sales data.                                    | Clustering by customer ID for faster retrieval.               | Bucketing on employee age for faster aggregation.      |
+
+---
+
+## **What is an Index and How Does it Improve Performance**
+
+| **Aspect**            
+
+ | **Description**                                                              |
+|------------------------|------------------------------------------------------------------------------|
+| **Definition**         | A database object that improves the speed of data retrieval operations.       |
+| **Types**              | Clustered, Non-Clustered, Full-Text, XML, Spatial.                            |
+| **Performance**        | Reduces I/O operations and speeds up query performance by using a b-tree structure. |
+| **Trade-Off**          | Increases write operation time and requires more storage space.               |
+
+---
+
+## **Performance Optimization Approaches in SQL**
+
+| **Approach**           | **Description**                                                                  |
+|------------------------|----------------------------------------------------------------------------------|
+| **Indexing**           | Use indexes to speed up read operations.                                          |
+| **Query Optimization** | Write efficient SQL queries, avoid `SELECT *`, and use appropriate joins.         |
+| **Partitioning**       | Divide large tables into smaller, manageable pieces.                              |
+| **Normalization**      | Structure the database to reduce redundancy and improve data integrity.           |
+| **Caching**            | Store frequently accessed data in memory to reduce database load.                 |
+
+---
+
+## **What is a Subquery and How is it Different from a Join**
+
+| **Aspect**         | **Subquery**                                                               | **Join**                                                                        |
+|--------------------|---------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| **Definition**     | A query nested inside another query.                                       | Combines columns from two or more tables based on a related column between them. |
+| **Use Case**       | Used for filtering, aggregation, and calculations.                         | Used for combining data from multiple tables.                                    |
+| **Performance**    | Can be slower due to nested execution.                                     | Usually faster as it combines rows in a single pass.                             |
+| **Syntax**         | `SELECT * FROM table1 WHERE column1 = (SELECT column2 FROM table2)`         | `SELECT * FROM table1 JOIN table2 ON table1.id = table2.id`                      |
+
+---
+
+## **Difference between a Clustered and Non-Clustered Index**
+
+| **Aspect**              | **Clustered Index**                                                   | **Non-Clustered Index**                                                          |
+|-------------------------|----------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| **Definition**          | Reorders the physical order of the table and is the table itself.     | Creates a separate object within the table that points back to the table data.    |
+| **Number Allowed**      | Only one clustered index per table.                                   | Multiple non-clustered indexes are allowed per table.                             |
+| **Performance**         | Faster for range queries.                                             | Slower for retrieving data directly; better for exact match queries.              |
+
+---
+
+## **Types of Constraints in SQL**
+
+| **Constraint**      | **Description**                                                                 |
+|---------------------|---------------------------------------------------------------------------------|
+| **PRIMARY KEY**     | Uniquely identifies each record in a table.                                      |
+| **FOREIGN KEY**     | Ensures referential integrity between two tables.                                |
+| **UNIQUE**          | Ensures all values in a column are unique.                                       |
+| **CHECK**           | Ensures all values in a column satisfy a specific condition.                     |
+| **DEFAULT**         | Sets a default value for a column when no value is specified.                    |
+| **NOT NULL**        | Ensures a column cannot have a NULL value.                                       |
+
+---
+
+## **Difference between DELETE and TRUNCATE Commands in SQL**
+
+| **Aspect**          | **DELETE**                                                        | **TRUNCATE**                                                     |
+|---------------------|------------------------------------------------------------------|------------------------------------------------------------------|
+| **Usage**           | Removes rows based on a condition or all rows without a condition. | Removes all rows from a table without logging individual row deletions. |
+| **Logging**         | Fully logged; can be rolled back.                                 | Minimal logging; cannot be rolled back.                           |
+| **Performance**     | Slower due to logging and triggers.                               | Faster as it resets the table without individual row deletions.   |
+| **Trigger Activation** | Activates triggers.                                           | Does not activate triggers.                                       |
+
+---
+
+## **Difference between Trigger and Stored Procedure**
+
+| **Aspect**              | **Trigger**                                                               | **Stored Procedure**                                               |
+|-------------------------|---------------------------------------------------------------------------|--------------------------------------------------------------------|
+| **Definition**          | A set of SQL statements that automatically execute in response to certain events. | A set of SQL statements that execute when explicitly called.       |
+| **Use Case**            | Automatically enforce business rules, auditing, or logging.               | Perform routine tasks, complex logic, and data manipulation.       |
+| **Execution**           | Automatically invoked by DML events (INSERT, UPDATE, DELETE).             | Manually invoked using `EXEC` or `CALL`.                           |
+
+---
+
+## **Difference between a NULL Value and a Zero Value in SQL**
+
+| **Aspect**              | **NULL Value**                                                | **Zero Value**                                                   |
+|-------------------------|--------------------------------------------------------------|------------------------------------------------------------------|
+| **Definition**          | Represents an unknown, undefined, or missing value.           | Represents a numerical value of zero.                            |
+| **Data Type Compatibility** | Can be used with any data type.                           | Only compatible with numeric data types.                         |
+| **Comparison Behavior** | Any comparison with `NULL` results in `UNKNOWN`.              | Can be compared directly with other numeric values.              |
+| **Storage**             | Requires special handling and storage.                        | Stored as a regular numeric value.                               |
+
+Feel free to copy and paste this content into your Markdown file for documentation or study purposes.
