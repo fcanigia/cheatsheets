@@ -857,7 +857,158 @@ In the above, `Pi` is a compile-time constant, while `CreatedAt` is set at runti
 
 ### Private function in interface
 
+In C#, interfaces are designed to declare members (methods, properties, events, etc.) that must be implemented by classes or structs. Traditionally, all interface members were **public** and **abstract** by default, but starting with **C# 8.0**, interfaces can include **default implementations** for their methods. However, **private methods** can also be defined in an interface, but with certain restrictions and use cases.
+
+#### Private Methods in Interfaces (C# 8.0 and later)
+In **C# 8.0**, private methods in interfaces were introduced, primarily to support the **default method implementations** feature. Private methods in an interface help encapsulate functionality that can be reused by other interface methods without exposing it to the implementing class.
+
+##### Key Points:
+- **Private methods in interfaces** are only accessible within the interface itself.
+- They are typically used to share functionality between multiple default method implementations inside the interface.
+- The implementing class does not have access to or awareness of these private methods.
+
+##### Example of a Private Method in an Interface:
+```csharp
+public interface ILogger
+{
+    // A default method with implementation
+    void LogInfo(string message) => Log("Info", message);
+
+    // Another default method
+    void LogError(string message) => Log("Error", message);
+
+    // Private method in the interface to avoid code duplication
+    private void Log(string level, string message)
+    {
+        Console.WriteLine($"[{level}] {message}");
+    }
+}
+
+public class ConsoleLogger : ILogger
+{
+    // ConsoleLogger does not need to implement the private method or the default ones unless necessary
+}
+
+public class Program
+{
+    static void Main(string[] args)
+    {
+        ILogger logger = new ConsoleLogger();
+        logger.LogInfo("This is an info message.");
+        logger.LogError("This is an error message.");
+    }
+}
+```
+
+#### Explanation:
+- The interface `ILogger` has two public default methods: `LogInfo` and `LogError`.
+- Both default methods call the private `Log` method to avoid repeating code.
+- The implementing class `ConsoleLogger` doesn't need to implement these methods unless it wants to override the default behavior.
+- The private `Log` method is not accessible to the `ConsoleLogger` class or any other classes that implement the interface.
+
+#### Benefits of Private Methods in Interfaces:
+- **Code Reusability**: Private methods help avoid duplicating code across multiple default method implementations within the interface.
+- **Encapsulation**: The private method is hidden from implementing classes, ensuring they only interact with the public members of the interface.
+- **Maintainability**: If the shared logic changes, you only need to update the private method inside the interface.
+
+#### Limitations:
+- Private methods can only be used within the interface itself and are invisible to implementing classes or structs.
+- Private methods in interfaces are only supported from **C# 8.0** onward.
+
+#### Summary:
+Private methods in interfaces allow you to encapsulate shared logic across multiple default method implementations in an interface. This feature improves code maintainability by reducing redundancy, but these private methods are not visible to the classes that implement the interface.
+
 ### Abstract class sealed
+In C#, both **abstract** and **sealed** are class modifiers, but they serve opposite purposes and cannot be used together on the same class. Let’s break down each keyword's role and why they are incompatible.
+
+#### 1. **Abstract Class**
+An **abstract class** is a class that cannot be instantiated directly and is meant to be a base class for other classes to inherit from. It can define both abstract methods (methods without implementation that must be implemented by derived classes) and concrete methods (methods with implementation).
+
+##### Key Characteristics of Abstract Class:
+- Cannot be instantiated directly.
+- Must be inherited by another class.
+- Can contain abstract methods (which must be implemented by subclasses).
+- Can contain implemented methods and properties.
+
+##### Example:
+```csharp
+public abstract class Shape
+{
+    public abstract double GetArea(); // Must be implemented by derived classes
+
+    public void Display()
+    {
+        Console.WriteLine("Displaying shape.");
+    }
+}
+
+public class Circle : Shape
+{
+    private double _radius;
+
+    public Circle(double radius)
+    {
+        _radius = radius;
+    }
+
+    public override double GetArea() => Math.PI * _radius * _radius;
+}
+```
+
+#### 2. **Sealed Class**
+A **sealed class** is a class that cannot be inherited. Once a class is marked as `sealed`, no other class can derive from it, effectively sealing its implementation.
+
+##### Key Characteristics of Sealed Class:
+- Cannot be inherited by any other class.
+- Can be instantiated like a regular class.
+- Often used when you want to prevent further subclassing of the class, ensuring that the behavior stays fixed.
+
+##### Example:
+```csharp
+public sealed class FinalClass
+{
+    public void DoSomething()
+    {
+        Console.WriteLine("FinalClass implementation.");
+    }
+}
+```
+
+#### Why You Cannot Have an Abstract Sealed Class
+
+**Abstract** and **sealed** serve opposite purposes:
+
+- An **abstract class** is designed to be a **base class**, meaning other classes should derive from it and implement its abstract members.
+- A **sealed class** is the opposite — it is designed to prevent inheritance, meaning no class can derive from it.
+
+Therefore, combining the two keywords (`abstract sealed`) would be contradictory. An abstract class requires inheritance, while a sealed class forbids it, making the combination logically impossible.
+
+#### Alternatives:
+- If you want to prevent further derivation but still use an abstract class, you can create a **non-sealed derived class** that implements the abstract members and mark that derived class as `sealed`.
+
+##### Example:
+```csharp
+public abstract class BaseClass
+{
+    public abstract void DoSomething();
+}
+
+public sealed class DerivedClass : BaseClass
+{
+    public override void DoSomething()
+    {
+        Console.WriteLine("Implementation in a sealed derived class.");
+    }
+}
+```
+
+In this case, the base class `BaseClass` is abstract and meant to be inherited, but the derived class `DerivedClass` is `sealed`, so it can't be inherited further.
+
+#### Summary:
+- **Abstract class**: Meant to be a base class that is inherited from and extended.
+- **Sealed class**: Prevents other classes from inheriting it.
+  
+You cannot have a class that is both **abstract** and **sealed** because it would conflict with the intended purpose of each modifier.
 
 ### Linq let
 
