@@ -678,6 +678,77 @@ The choice between managed and unmanaged code depends on several factors:
 Managed and unmanaged code serve different purposes and have their own advantages and disadvantages. In C# and the broader .NET environment, managed code is the default and provides a rich set of features that improve developer productivity, application security, and cross-platform compatibility. However, there are scenarios where unmanaged code is necessary, particularly when interacting with system-level resources or when performance is a critical concern. Understanding both types of code and when to use each is essential for developing robust and efficient applications in the .NET ecosystem.
 
 ### Readonly vs constants
+In C#, both `readonly` and `const` are used to define values that should not change after they are initialized. However, they have key differences in terms of behavior, use cases, and restrictions.
+
+### 1. **`const` (Constant)**
+- **Value Assignment**: A `const` field must be assigned at the time of declaration and cannot be changed later. The value of a `const` is set at compile-time.
+- **Immutability**: `const` values are implicitly static and shared across all instances of a class. They can only hold primitive types (like `int`, `char`, `string`) and can never hold a reference type unless it's a string.
+- **Scope**: Because `const` values are evaluated at compile-time, they are deeply embedded into the assembly. If you update the value in one assembly and don't recompile all other assemblies referencing it, they will still hold the old value.
+  
+#### Example:
+```csharp
+public class Constants
+{
+    public const int MaxItems = 100; // Must be assigned a value at declaration.
+}
+```
+
+- **Allowed Types**: `const` can only be applied to primitive types, enums, or strings.
+- **Initialization Time**: At **compile-time**.
+
+### 2. **`readonly`**
+- **Value Assignment**: A `readonly` field can be assigned either at the time of declaration or in the constructor, allowing for greater flexibility than `const`. However, after assignment, it cannot be modified.
+- **Immutability**: `readonly` fields are evaluated at runtime, making them more suitable for values that are unknown until runtime (e.g., dependent on constructor parameters or external configurations).
+- **Scope**: Unlike `const`, `readonly` fields are instance-specific (unless marked `static readonly`), meaning each instance of a class can have its own value.
+
+#### Example:
+```csharp
+public class Config
+{
+    public readonly int MaxUsers;
+    
+    public Config(int maxUsers)
+    {
+        MaxUsers = maxUsers; // Can be assigned in the constructor.
+    }
+}
+```
+
+- **Allowed Types**: `readonly` can be used with **any data type**, including reference types.
+- **Initialization Time**: At **runtime** (in the constructor) or at declaration.
+
+### Key Differences
+
+| Feature                | `const`                             | `readonly`                        |
+|------------------------|-------------------------------------|-----------------------------------|
+| **Assignment**          | At declaration (compile-time)       | At declaration or in constructor (runtime) |
+| **Mutability**          | Cannot change after declaration     | Can be changed in constructor but not afterward |
+| **Types Supported**     | Primitive types, enums, strings     | Any type (including reference types) |
+| **Scope**               | Implicitly `static`                 | Can be instance-specific or `static` |
+| **When to Use**         | For values known at compile-time    | For values determined at runtime or constructor |
+| **Storage**             | Deeply embedded in assembly         | Stored with instance data         |
+
+### When to Use `const`:
+- Use `const` when the value is a constant that will never change, is known at compile-time, and applies universally (e.g., mathematical constants like `Pi`).
+
+### When to Use `readonly`:
+- Use `readonly` when the value is determined at runtime or differs between instances (e.g., a configuration value passed via the constructor).
+
+### Example: When to Choose `readonly` Over `const`
+```csharp
+public class MyClass
+{
+    public const double Pi = 3.14159;        // Known at compile-time
+    public readonly DateTime CreatedAt;      // Set at runtime, in constructor
+
+    public MyClass()
+    {
+        CreatedAt = DateTime.Now;           // Assigned a value at runtime
+    }
+}
+```
+
+In the above, `Pi` is a compile-time constant, while `CreatedAt` is set at runtime and can vary for different instances.
 
 ### Private function in interface
 
