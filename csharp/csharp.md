@@ -40,7 +40,7 @@
   * [Middleware: Map, MapWhen, Use, Run](#middleware)
   * [Async/await](#async-await)
   * [Threads](#threads)
-  * [Readonly vs constants](#readonly-vs-constants)
+  * [Readonly vs constants](#Readonly-vs-constants)
   * [Private function in interface](#private-function-in-interface)
   * [Abstract class sealed](#abstract-class-sealed)
   * [Linq let](#linq-let)
@@ -48,6 +48,7 @@
   * [throw vs throw ex](#throw-vs-throw-ex)
   * [Garbage collector](#garbage-collector)
   * [Managed and Unmanaged code](#managed-and-unmanaged-code)
+  * [Static class vs singleton](#static-class-vs-singleton)
 - [EF](#ef)
   * [EF vs Dapper](#EF-vs-Dapper) 
   * [How does EF prevents sql injection?](#how-does-ef-prevents-sql-injection)
@@ -677,15 +678,119 @@ The choice between managed and unmanaged code depends on several factors:
 
 Managed and unmanaged code serve different purposes and have their own advantages and disadvantages. In C# and the broader .NET environment, managed code is the default and provides a rich set of features that improve developer productivity, application security, and cross-platform compatibility. However, there are scenarios where unmanaged code is necessary, particularly when interacting with system-level resources or when performance is a critical concern. Understanding both types of code and when to use each is essential for developing robust and efficient applications in the .NET ecosystem.
 
+### Static class vs singleton
+In C#, both **static classes** and **singletons** are used to ensure that only one instance of a class is created. However, they serve different purposes and are implemented in distinct ways, with each having unique characteristics and use cases.
+
+#### 1. **Static Class**
+
+A **static class** is a class that cannot be instantiated or inherited. It is typically used for utility or helper methods, where state management is not required, and all members of the class are static. A static class and its members are inherently **global** and **shared** across the application.
+
+##### Key Characteristics of Static Class:
+- **Instantiation**: Cannot be instantiated (i.e., you cannot create an object from a static class).
+- **Inheritance**: Cannot be inherited from or used as a base class.
+- **Lifetime**: Its members are initialized once when the application starts and exist for the lifetime of the application.
+- **State**: Since all members are static, a static class does not manage instance-level state; all state is shared globally.
+- **Thread-Safety**: By default, static members are shared across all threads, so thread safety must be manually handled when accessing or modifying static members.
+
+##### Example of Static Class:
+```csharp
+public static class MathHelper
+{
+    public static double Add(double a, double b)
+    {
+        return a + b;
+    }
+}
+```
+
+In this example, `MathHelper` provides a global utility method `Add` that can be accessed without creating an instance of the class.
+
+#### 2. **Singleton**
+
+A **singleton** is a design pattern used to restrict the instantiation of a class to a single instance and provide global access to that instance. Unlike a static class, a singleton **can manage state** and has an instance, but ensures that only one instance of the class exists throughout the application's lifetime.
+
+##### Key Characteristics of Singleton:
+- **Instantiation**: Allows only one instance of the class, typically managed through lazy initialization or eager initialization.
+- **Inheritance**: Can be inherited or extended, unlike static classes.
+- **Lifetime**: The singleton instance is typically created when first accessed and exists for the lifetime of the application.
+- **State**: Since a singleton is an instance, it can manage instance-level state, allowing it to maintain information throughout the application's execution.
+- **Thread-Safety**: A singleton may require thread safety mechanisms (like `lock` or `ThreadStatic`) to ensure the instance is created safely when accessed concurrently.
+
+##### Example of Singleton:
+```csharp
+public class Singleton
+{
+    private static Singleton _instance;
+    private static readonly object _lock = new object();
+
+    // Private constructor to prevent external instantiation
+    private Singleton() { }
+
+    // Public method to access the single instance
+    public static Singleton Instance
+    {
+        get
+        {
+            // Lazy initialization with thread safety
+            lock (_lock)
+            {
+                if (_instance == null)
+                {
+                    _instance = new Singleton();
+                }
+            }
+            return _instance;
+        }
+    }
+
+    public void DoSomething()
+    {
+        Console.WriteLine("Singleton instance is working!");
+    }
+}
+```
+
+In this example, the `Singleton` class allows only one instance, accessible via the `Instance` property. The `lock` ensures thread safety during instance creation.
+
+#### Key Differences
+
+| Feature                     | **Static Class**                                        | **Singleton**                                    |
+|-----------------------------|--------------------------------------------------------|--------------------------------------------------|
+| **Instantiation**            | Cannot be instantiated                                 | One instance, managed by the class itself        |
+| **Inheritance**              | Cannot be inherited                                    | Can be inherited                                |
+| **State Management**         | Cannot maintain state (except through static members)  | Can maintain instance-level state                |
+| **Thread-Safety**            | Must be manually handled for static members            | Thread safety typically handled for instance creation |
+| **Memory Usage**             | No instance is created (exists in memory as static members) | One instance in memory                           |
+| **Use Case**                 | Utility or helper classes with no state                | Classes requiring a single instance with state   |
+| **Lifetime**                 | Exists for the application's lifetime                  | Exists for the application's lifetime (lazy or eager initialization) |
+
+#### When to Use a Static Class:
+- For **stateless utility methods** that are commonly used across the application (e.g., mathematical calculations, string manipulations).
+- When you do not need inheritance or an instance to hold state.
+
+#### When to Use a Singleton:
+- When you need to **manage state globally**, but still want to encapsulate the behavior within an instance.
+- When the class needs to implement **interfaces** or participate in **dependency injection**.
+- When a class requires **lazy initialization** or should be created only when first needed (singleton pattern allows this).
+
+---
+
+#### Summary
+
+- A **static class** provides global, stateless methods and fields, and cannot be instantiated or hold state.
+- A **singleton** ensures that a class has only one instance, and is useful when maintaining instance-level state across an application.
+
+While both are used to provide a single point of access, a **singleton** offers more flexibility when state management, inheritance, or lazy initialization is required.
+
 ### Readonly vs constants
 In C#, both `readonly` and `const` are used to define values that should not change after they are initialized. However, they have key differences in terms of behavior, use cases, and restrictions.
 
-### 1. **`const` (Constant)**
+#### 1. **`const` (Constant)**
 - **Value Assignment**: A `const` field must be assigned at the time of declaration and cannot be changed later. The value of a `const` is set at compile-time.
 - **Immutability**: `const` values are implicitly static and shared across all instances of a class. They can only hold primitive types (like `int`, `char`, `string`) and can never hold a reference type unless it's a string.
 - **Scope**: Because `const` values are evaluated at compile-time, they are deeply embedded into the assembly. If you update the value in one assembly and don't recompile all other assemblies referencing it, they will still hold the old value.
   
-#### Example:
+##### Example:
 ```csharp
 public class Constants
 {
@@ -696,12 +801,12 @@ public class Constants
 - **Allowed Types**: `const` can only be applied to primitive types, enums, or strings.
 - **Initialization Time**: At **compile-time**.
 
-### 2. **`readonly`**
+#### 2. **`readonly`**
 - **Value Assignment**: A `readonly` field can be assigned either at the time of declaration or in the constructor, allowing for greater flexibility than `const`. However, after assignment, it cannot be modified.
 - **Immutability**: `readonly` fields are evaluated at runtime, making them more suitable for values that are unknown until runtime (e.g., dependent on constructor parameters or external configurations).
 - **Scope**: Unlike `const`, `readonly` fields are instance-specific (unless marked `static readonly`), meaning each instance of a class can have its own value.
 
-#### Example:
+##### Example:
 ```csharp
 public class Config
 {
@@ -717,7 +822,7 @@ public class Config
 - **Allowed Types**: `readonly` can be used with **any data type**, including reference types.
 - **Initialization Time**: At **runtime** (in the constructor) or at declaration.
 
-### Key Differences
+#### Key Differences
 
 | Feature                | `const`                             | `readonly`                        |
 |------------------------|-------------------------------------|-----------------------------------|
@@ -728,13 +833,13 @@ public class Config
 | **When to Use**         | For values known at compile-time    | For values determined at runtime or constructor |
 | **Storage**             | Deeply embedded in assembly         | Stored with instance data         |
 
-### When to Use `const`:
+#### When to Use `const`:
 - Use `const` when the value is a constant that will never change, is known at compile-time, and applies universally (e.g., mathematical constants like `Pi`).
 
-### When to Use `readonly`:
+#### When to Use `readonly`:
 - Use `readonly` when the value is determined at runtime or differs between instances (e.g., a configuration value passed via the constructor).
 
-### Example: When to Choose `readonly` Over `const`
+#### Example: When to Choose `readonly` Over `const`
 ```csharp
 public class MyClass
 {
